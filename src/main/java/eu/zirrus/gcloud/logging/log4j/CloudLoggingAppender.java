@@ -3,6 +3,7 @@ package eu.zirrus.gcloud.logging.log4j;
 import java.io.Serializable;
 import java.util.Collections;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -20,7 +21,7 @@ import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.logging.Payload.StringPayload;
 import com.google.cloud.logging.Severity;
 
-@Plugin(name="CloudLoggingAppender", category="Core", elementType="appender", printObject=true)
+@Plugin(name="CloudLogging", category="Core", elementType="appender", printObject=true)
 public class CloudLoggingAppender extends AbstractAppender {
 	
 	protected String logName = "default";
@@ -48,13 +49,30 @@ public class CloudLoggingAppender extends AbstractAppender {
 	    LogEntry entry = LogEntry.newBuilder(StringPayload.of(text))
 	        .setLogName(logName)
 	        .setResource(this.resource)
-	        .setSeverity(Severity.valueOf(event.getLevel().name()))
+	        .setSeverity(getCloudLoggingSeverity(event.getLevel()))
 	        .build();
 
 	    // Writes the log entry
 	    logging.write(Collections.singleton(entry));
 
 	    System.out.printf("Logged: %s%n", text);
+	}
+	
+	public static Severity getCloudLoggingSeverity(Level level){
+		switch(level.intLevel()){
+			case 100:
+				return Severity.CRITICAL;
+			case 200:
+				return Severity.ERROR;
+			case 300:
+				return Severity.WARNING;
+			case 400:
+				return Severity.INFO;
+			case 500:
+			case 600:
+				return Severity.DEBUG;
+		}
+		return Severity.INFO;
 	}
 	
     @PluginFactory
