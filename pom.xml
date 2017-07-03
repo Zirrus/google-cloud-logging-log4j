@@ -1,73 +1,157 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>eu.zirrus</groupId>
-  <artifactId>cloud-logging-log4j</artifactId>
-  <version>0.1.0</version>
-  <packaging>jar</packaging>
+	<groupId>eu.zirrus</groupId>
+	<artifactId>cloud-logging-log4j</artifactId>
+	<version>0.1.0</version>
+	<packaging>jar</packaging>
 
-  <name>log4j Cloud Logging Appender</name>
-  <url>https://github.com/Zirrus/google-cloud-logging-log4j</url>
+	<name>log4j Cloud Logging Appender</name>
+	<url>https://github.com/Zirrus/google-cloud-logging-log4j</url>
 
-  <organization>
-  	<name>Zirrus Cloud Service GmbH</name>
-  	<url>https://www.zirrus.eu</url>
-  </organization>
-  
-  <developers>
-    <developer>
-      <name>Paul Woelfel</name>
-      <email>paul.woelfel@zirrus.eu</email>
-      <organization>Zirrus Cloud Service GmbH</organization>
-      <organizationUrl>https://www.zirrus.eu</organizationUrl>
-    </developer>
-  </developers>
-  
-  <licenses>
-    <license>
-      <name>GNU GPL v3</name>
-      <url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
-      <distribution>repo</distribution>
-  	</license>
-  </licenses>
-  <description>This project helps logging all log messages to Google Cloud Logging via an log4j2 Appender.</description>
-  <issueManagement>
-  	<system>github</system>
-  	<url>https://github.com/Zirrus/google-cloud-logging-log4j/issues</url>
-  </issueManagement>
-  <scm>
-	<connection>scm:git:>https://github.com/Zirrus/google-cloud-logging-log4j.git</connection>
-	<developerConnection>scm:git:>https://github.com/Zirrus/google-cloud-logging-log4j.git</developerConnection>
-	<url>https://github.com/Zirrus/google-cloud-logging-log4j/tree/master</url>
-  </scm>
+	<organization>
+		<name>Zirrus Cloud Service GmbH</name>
+		<url>https://www.zirrus.eu</url>
+	</organization>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+	<developers>
+		<developer>
+			<name>Paul Woelfel</name>
+			<email>paul.woelfel@zirrus.eu</email>
+			<organization>Zirrus Cloud Service GmbH</organization>
+			<organizationUrl>https://www.zirrus.eu</organizationUrl>
+		</developer>
+	</developers>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-api</artifactId>
-    <version>2.8.2</version>
-  </dependency>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-core</artifactId>
-    <version>2.8.2</version>
-  </dependency>
-	<dependency>
-	  <groupId>com.google.cloud</groupId>
-	  <artifactId>google-cloud-logging</artifactId>
-	  <version>1.2.1</version>
-	</dependency>
-  </dependencies>
+	<licenses>
+		<license>
+			<name>GNU GPL v3</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<description>This project helps logging all log messages to Google Cloud Logging via an log4j2 Appender.</description>
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/Zirrus/google-cloud-logging-log4j/issues</url>
+	</issueManagement>
+	<scm>
+		<connection>scm:git:>https://github.com/Zirrus/google-cloud-logging-log4j.git</connection>
+		<developerConnection>scm:git:>https://github.com/Zirrus/google-cloud-logging-log4j.git</developerConnection>
+		<url>https://github.com/Zirrus/google-cloud-logging-log4j/tree/master</url>
+	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-logging</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<executions>
+					<execution>
+						<id>log4j-plugin-processor</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<phase>process-classes</phase>
+						<configuration>
+							<proc>only</proc>
+							<annotationProcessors>
+								<annotationProcessor>org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor</annotationProcessor>
+							</annotationProcessors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-gpg-plugin</artifactId> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>sign-artifacts</id> -->
+<!-- 						<phase>verify</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>sign</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.sonatype.plugins</groupId> -->
+<!-- 				<artifactId>nexus-staging-maven-plugin</artifactId> -->
+<!-- 				<version>1.6.3</version> -->
+<!-- 				<extensions>true</extensions> -->
+<!-- 				<configuration> -->
+<!-- 					<serverId>ossrh</serverId> -->
+<!-- 					<nexusUrl>https://oss.sonatype.org/</nexusUrl> -->
+<!-- 					<stagingProfileId>19375019933d12</stagingProfileId> -->
+<!-- 					<autoReleaseAfterClose>true</autoReleaseAfterClose> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
 
 </project>
