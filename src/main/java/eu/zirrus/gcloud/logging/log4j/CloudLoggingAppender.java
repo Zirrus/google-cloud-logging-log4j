@@ -26,6 +26,15 @@ import com.google.cloud.logging.LoggingOptions;
 import com.google.cloud.logging.Payload.StringPayload;
 import com.google.cloud.logging.Severity;
 
+/**
+ * Google Cloud Logging Appender for log4j2
+ * 
+ * @author Paul Woelfel <paul.woelfel@zirrus.eu>
+ * 
+ * This Appender can be used to send all log messages to Google Cloud Logging (https://cloud.google.com/logging/docs/). 
+ * If not specified, it uses the default project id (set by glcoud config set) and the application default credentials.
+ *
+ */
 @Plugin(name="CloudLogging", category="Core", elementType="appender", printObject=true)
 public class CloudLoggingAppender extends AbstractAppender {
 	
@@ -34,13 +43,36 @@ public class CloudLoggingAppender extends AbstractAppender {
 	protected boolean ignoreExceptions = false;
 	protected Logging logging;
 
+	/**
+	 * Create CloudLoggingAppender
+	 * @param name appender name, also used for log file name in Cloud Logging
+	 * @param filter log4j filter
+	 * @param layout log4j layout
+	 */
 	public CloudLoggingAppender(String name, Filter filter, Layout<? extends Serializable> layout) {
-		this(name, filter, layout, false, null, null);
+		this(name, filter, layout, true, null, null);
 	}
+
+	/**
+	 * Create CloudLoggingAppender
+	 * @param name appender name, also used for log file name in Cloud Logging
+	 * @param filter log4j filter
+	 * @param layout log4j layout
+	 * @param ignoreExceptions ignore exceptions happening inside this appender
+	 */
 	public CloudLoggingAppender(String name, Filter filter, Layout<? extends Serializable> layout, boolean ignoreExceptions) {
 		this(name, filter, layout, ignoreExceptions, null, null);
 	}
 
+	/**
+	 * Create CloudLoggingAppender
+	 * @param name appender name, also used for log file name in Cloud Logging
+	 * @param filter log4j filter
+	 * @param layout log4j layout
+	 * @param ignoreExceptions ignore exceptions happening inside this appender
+	 * @param projectId Google Cloud Project ID
+	 * @param credentialsFile JSON file with service account
+	 */
 	public CloudLoggingAppender(String name, Filter filter, Layout<? extends Serializable> layout,
 			boolean ignoreExceptions, String projectId, String credentialsFile) {
 		super(name, filter, layout, ignoreExceptions);
@@ -70,6 +102,9 @@ public class CloudLoggingAppender extends AbstractAppender {
 		this.resource = MonitoredResource.newBuilder("global").build();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.logging.log4j.core.Appender#append(org.apache.logging.log4j.core.LogEvent)
+	 */
 	public void append(LogEvent event) {
 	    String text = event.getMessage().getFormattedMessage();
 
@@ -85,6 +120,11 @@ public class CloudLoggingAppender extends AbstractAppender {
 //	    System.out.printf("Logged: %s%n", text);
 	}
 	
+	/**
+	 * map log4j level to Google Cloud Logging Severity
+	 * @param level log4j log level
+	 * @return Google Cloud Severity
+	 */
 	public static Severity getCloudLoggingSeverity(Level level){
 		switch(level.intLevel()){
 			case 100:
@@ -102,6 +142,15 @@ public class CloudLoggingAppender extends AbstractAppender {
 		return Severity.INFO;
 	}
 	
+    /**
+     * Factory for log4j configuration
+     * @param name appender name, also used for logName
+     * @param layout log4j layout
+     * @param filter log4j filter
+     * @param projectId optional project id
+     * @param credentialsFile optional JSON service account file
+     * @return
+     */
     @PluginFactory
     public static CloudLoggingAppender createAppender(
             @PluginAttribute("name") String name,
