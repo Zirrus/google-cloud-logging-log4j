@@ -149,7 +149,7 @@ public class CloudLoggingAppender extends AbstractAppender {
      * @param filter log4j filter
      * @param projectId optional project id
      * @param credentialsFile optional JSON service account file
-     * @return
+     * @return CloudLoggingAppender instance
      */
     @PluginFactory
     public static CloudLoggingAppender createAppender(
