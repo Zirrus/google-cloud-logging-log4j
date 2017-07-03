@@ -2,13 +2,45 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>eu.zirrus.gcloud.logging</groupId>
-  <artifactId>log4j</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <groupId>eu.zirrus</groupId>
+  <artifactId>cloud-logging-log4j</artifactId>
+  <version>0.1.0</version>
   <packaging>jar</packaging>
 
-  <name>log4j Appender</name>
-  <url>http://maven.apache.org</url>
+  <name>log4j Cloud Logging Appender</name>
+  <url>https://github.com/Zirrus/google-cloud-logging-log4j</url>
+
+  <organization>
+  	<name>Zirrus Cloud Service GmbH</name>
+  	<url>https://www.zirrus.eu</url>
+  </organization>
+  
+  <developers>
+    <developer>
+      <name>Paul Woelfel</name>
+      <email>paul.woelfel@zirrus.eu</email>
+      <organization>Zirrus Cloud Service GmbH</organization>
+      <organizationUrl>https://www.zirrus.eu</organizationUrl>
+    </developer>
+  </developers>
+  
+  <licenses>
+    <license>
+      <name>GNU GPL v3</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+      <distribution>repo</distribution>
+  	</license>
+  </licenses>
+  <description>This project helps logging all log messages to Google Cloud Logging via an log4j2 Appender.</description>
+  <issueManagement>
+  	<system>github</system>
+  	<url>https://github.com/Zirrus/google-cloud-logging-log4j/issues</url>
+  </issueManagement>
+  <scm>
+	<connection>scm:git:>https://github.com/Zirrus/google-cloud-logging-log4j.git</connection>
+	<developerConnection>scm:git:>https://github.com/Zirrus/google-cloud-logging-log4j.git</developerConnection>
+	<url>https://github.com/Zirrus/google-cloud-logging-log4j/tree/master</url>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,8 +69,5 @@
 	  <version>1.2.1</version>
 	</dependency>
   </dependencies>
-  <organization>
-  	<name>Zirrus Cloud Service GmbH</name>
-  	<url>https://www.zirrus.eu</url>
-  </organization>
+
 </project>
