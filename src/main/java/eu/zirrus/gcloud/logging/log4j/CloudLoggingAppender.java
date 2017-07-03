@@ -1,5 +1,8 @@
 package eu.zirrus.gcloud.logging.log4j;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 
@@ -14,6 +17,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.MonitoredResource;
 import com.google.cloud.logging.LogEntry;
 import com.google.cloud.logging.Logging;
@@ -30,17 +35,39 @@ public class CloudLoggingAppender extends AbstractAppender {
 	protected Logging logging;
 
 	public CloudLoggingAppender(String name, Filter filter, Layout<? extends Serializable> layout) {
-		this(name, filter, layout, false);
+		this(name, filter, layout, false, null, null);
+	}
+	public CloudLoggingAppender(String name, Filter filter, Layout<? extends Serializable> layout, boolean ignoreExceptions) {
+		this(name, filter, layout, ignoreExceptions, null, null);
 	}
 
 	public CloudLoggingAppender(String name, Filter filter, Layout<? extends Serializable> layout,
-			boolean ignoreExceptions) {
+			boolean ignoreExceptions, String projectId, String credentialsFile) {
 		super(name, filter, layout, ignoreExceptions);
 		this.logName = name;
-		this.resource = MonitoredResource.newBuilder("global").build();
 		this.ignoreExceptions = ignoreExceptions;
 		// Instantiates a client
-		this.logging = LoggingOptions.getDefaultInstance().getService();
+		LoggingOptions loggingOptions;
+		com.google.cloud.logging.LoggingOptions.Builder builder = LoggingOptions.newBuilder();
+		if (projectId != null){
+			builder.setProjectId(projectId);
+		}
+		if (credentialsFile != null){
+			try {
+				Credentials credentials;
+				credentials = GoogleCredentials.fromStream(new FileInputStream(credentialsFile));
+				builder.setCredentials(credentials);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+//		loggingOptions = LoggingOptions.getDefaultInstance();
+		loggingOptions = builder.build();
+		
+		this.logging = loggingOptions.getService();
+		this.resource = MonitoredResource.newBuilder("global").build();
 	}
 
 	public void append(LogEvent event) {
@@ -55,7 +82,7 @@ public class CloudLoggingAppender extends AbstractAppender {
 	    // Writes the log entry
 	    logging.write(Collections.singleton(entry));
 
-	    System.out.printf("Logged: %s%n", text);
+//	    System.out.printf("Logged: %s%n", text);
 	}
 	
 	public static Severity getCloudLoggingSeverity(Level level){
@@ -79,14 +106,16 @@ public class CloudLoggingAppender extends AbstractAppender {
     public static CloudLoggingAppender createAppender(
             @PluginAttribute("name") String name,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
-            @PluginElement("Filter") final Filter filter) {
+            @PluginElement("Filter") final Filter filter,
+            @PluginAttribute("projectId") String projectId,
+            @PluginAttribute("credentialsFile") String credentialsFile) {
         if (name == null) {
             name = "default";
         }
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
         }
-        return new CloudLoggingAppender(name, filter, layout, true);
+        return new CloudLoggingAppender(name, filter, layout, true, projectId, credentialsFile);
     }
 
 }

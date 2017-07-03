@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="DEBUG">
+<Configuration status="INFO">
   <Appenders>
-    <CloudLogging name="CloudLoggingTest" >
+    <CloudLogging name="CloudLoggingTest" projectId="allcyte-akira">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
     </CloudLogging>
     <Console name="Console">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>    
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+      
     </Console>
+    <Async name="CloudLoggingAsync">
+      <AppenderRef ref="CloudLoggingTest"/>
+    </Async>
   </Appenders>
   <Loggers>
-    <Root level="debug">
-      <AppenderRef ref="Console"/>
-      <AppenderRef ref="CloudLoggingTest" />
+    <Root level="info">
+      <AppenderRef ref="Console" level="error"/>
+      <AppenderRef ref="CloudLoggingAsync" />
     </Root>
   </Loggers>
 </Configuration>
